@@ -1,130 +1,184 @@
-# **Product Sales Analysis Report**
+# Product Sales Analysis Report
 
-## **1. Data Validation & Cleaning**
-Before performing the analysis, I validated and cleaned the dataset to ensure data quality. Below are the **validation and cleaning steps** for each column:
-
-### **✔ Column-Wise Validation & Cleaning**
-| **Column**            | **Validation & Cleaning Steps** |
-|-----------------------|--------------------------------|
-| **week**             | Checked for missing values (Clean). |
-| **sales_method**     | Standardized text format to lowercase. Fixed inconsistencies (e.g., 'em +' replaced with 'email +') (Clean). |
-| **customer_id**      | Verified uniqueness of IDs (No duplicates, Clean). |
-| **nb_sold**         | Checked for missing values (Clean). |
-| **revenue**         | - Identified missing values (more than 5%, so not removed). <br> - Used median imputation (since revenue is left-skewed). |
-| **years_as_customer** | - Ensured values do not exceed `(2025-1984 = 41 years)`. <br> - Replaced outliers with the median. |
-| **nb_site_visits**  | Checked for missing values (Clean). |
-| **state**           | Checked categories for inconsistencies (Clean). |
-
-Outcome: The dataset is now clean and ready for analysis.
+This repository provides a comprehensive analysis of product sales data, covering data cleaning, visualization, and business insights to support strategic decision-making.
 
 ---
 
-## **2. Exploratory Data Analysis**
-This section answers the key business questions with visuals and insights.
+## Repository Structure
 
-### **2.1 Customer Count per Sales Method**
-**How many customers were there for each approach?**  
-Findings:  
-- Email was the most used method (7,466 customers).  
-- Call had 4,962 customers.  
-- Email + Call had the fewest (2,572 customers).  
+```
+product-sales-analysis/
+├── data/
+│   └── product_sales.csv
+├── plots/
+│   ├── customer_per_method.png
+│   ├── Revenue_per_method.png
+│   ├── Revenue_distribution_per_method.png
+│   ├── revenue_dist.png
+│   ├── revenue_spread.png
+│   ├── Revenue_per_week.png
+│   └── Revenue_contribution_pie.png
+├── src/
+│   ├── data_cleaning.py
+│   ├── data_analysis.py
+│   ├── data_visualization.py
+│   └── __init__.py
+├── notebooks/
+│   └── exploratory_analysis.ipynb
+├── .gitignore
+├── LICENSE
+├── main.py
+├── requirements.txt
+└── README.md
+```
+
+- **`data/`**: Contains the original data file.
+- **`src/`**: Python modules used for cleaning, analyzing, and visualizing data.
+- **`notebooks/`**: Jupyter notebooks for exploratory analysis.
+- **`main.py`**: The main script to execute the analysis workflow.
+- **`requirements.txt`**: Lists all dependencies needed to run the project.
+- **`LICENSE`**: MIT License for open usage.
+
+---
+
+## Installation & Setup
+
+Follow these steps to set up and run the analysis locally:
+
+### Step 1: Clone the repository
+```bash
+git clone <repository-link>
+cd product-sales-analysis
+```
+
+### Step 2: Install dependencies
+```bash
+pip install -r requirements.txt
+```
+
+### Step 3: Run the analysis
+```bash
+python main.py
+```
+
+This script will load, clean, analyze, and visualize the dataset.
+
+---
+
+## Data Validation & Cleaning
+
+The dataset was validated and cleaned to ensure accurate analysis:
+
+| Column              | Validation & Cleaning Steps                                          |
+|---------------------|----------------------------------------------------------------------|
+| **week**            | Checked for missing values (Clean).                                  |
+| **sales_method**    | Standardized entries; replaced `"em +"` with `"email +"`.            |
+| **customer_id**     | Ensured uniqueness (no duplicates).                                  |
+| **nb_sold**         | Checked for missing values (Clean).                                  |
+| **revenue**         | Median imputation (due to left-skewed distribution).                 |
+| **years_as_customer**| Replaced outliers (values above 41) with median.                    |
+| **nb_site_visits**  | Checked for missing values (Clean).                                  |
+| **state**           | Checked for category consistency (Clean).                            |
+
+Dataset status: ✅ **Cleaned and ready for analysis.**
+
+---
+
+## Exploratory Data Analysis (EDA)
+
+### Customer Count per Sales Method
+- **Email**: 7,466 customers  
+- **Call**: 4,962 customers  
+- **Email + Call**: 2,572 customers (Highest revenue per customer)
 
 **Visualization:**  
-![Customer per Method](customer_per_method.png)
+![Customer per Method](plots/customer_per_method.png)
 
 ---
 
-### **2.2 Revenue Spread per Sales Method**
-**What does the revenue distribution look like overall?**  
-Findings:  
-- Revenue is left-skewed, meaning some customers generate significantly higher revenue.  
-- Email + Call produces the highest median revenue, but with greater variance.  
-- Call-only customers tend to generate the lowest revenue per customer.  
+### Revenue Distribution Analysis
+- Revenue is **left-skewed**, with outliers significantly impacting averages.
+- Revenue typically ranges between **50 to 125**.
+- Median used to impute missing values due to skewness.
+
+**Visualizations:**  
+![Revenue per Method](plots/Revenue_per_method.png)  
+![Revenue Distribution per Method](plots/Revenue_distribution_per_method.png)
+
+**Additional Revenue Insights:**
+- Multiple peaks indicate various customer segments.
+- Revenue mostly concentrated below **150**.
+
+**Revenue Spread (Boxplot):**  
+![Revenue Spread](plots/revenue_spread.png)
+
+---
+
+### Revenue Over Time
+- Revenue growth is consistent across all methods.
+- **Email + Call** shows highest growth.
+- **Call-only** has lowest growth rate.
 
 **Visualization:**  
-![Revenue per Method](Revenue_per_method.png)
-![Revenue Distribution per Method](Revenue_distribution_per_method.png)
-
-#### **2.2.1 Revenue Distribution**
-**Additional Insights:**
-- Revenue is **not normally distributed** and shows multiple peaks.
-- A **significant portion of revenue** is concentrated below 150.
-- The **Kernel Density Estimation (KDE) curve** suggests different revenue groupings.
-
-**Visualization:**  
-![Revenue Distribution](revenue_dist.png)
-
-#### **2.2.2 Revenue Spread Analysis**
-**Additional Insights:**
-- There are **multiple outliers** above 200.
-- Most customers have a revenue range between **50 and 125**.
-- The **boxplot confirms the left-skewed nature** of revenue.
-
-**Visualization:**  
-![Revenue Spread](revenue_spread.png)
+![Revenue per Week](plots/Revenue_per_week.png)
 
 ---
 
-### **2.3 Revenue Over Time per Sales Method**
-**Was there any difference in revenue over time for each method?**  
-Findings:  
-- All methods show revenue growth over time.  
-- Email + Call had the highest growth rate, maintaining a higher revenue trend.  
-- Call-only method had the lowest revenue growth.  
+### Revenue Contribution by Method
+- **Email:** 51.3% total revenue
+- **Email + Call:** 31.3%
+- **Call-only:** 17.4%
 
-**Visualization:**  
-![Revenue per Week](Revenue_per_week.png)
+**Visualization (Pie Chart):**  
+![Revenue Contribution](plots/Revenue_contribution_pie.png)
 
 ---
 
-### **2.4 Revenue Contribution per Method**
-**Which method contributed the most revenue?**  
-Findings:  
-- Email generated the most total revenue (51.3% of total revenue).  
-- Email + Call contributed 31.3% of total revenue.  
-- Call-only had the lowest contribution (17.4%).  
+## Key Metric: Average Revenue per Customer
 
-**Visualization:**  
-![Revenue Contribution](Revenue_contribution_pie.png)
+Calculated as:
 
----
+```plaintext
+Average Revenue per Customer = Total Revenue / Total Customers
+```
 
-## **3. Business Metric to Monitor**
-### **Metric: Average Revenue per Customer**
-**Formula:**  
-Avg Revenue per Customer = Total Revenue / Total Customers
+**Current Value:** **93.62**
 
-
-**Initial Value from Data:**
-Initial Avg Revenue per Customer: 93.62
-
-
-### **How to Monitor This Metric?**
-- Track weekly and monthly in a dashboard.
-- Set up alerts if it drops below X% of the average.
-- Compare performance by sales method.
+Monitor weekly/monthly for significant changes and trends.
 
 ---
 
-## **4. Final Summary & Recommendations**
-### **Key Takeaways**
-- Email had the most customers but moderate revenue per customer.
-- Email + Call had fewer customers but the highest revenue per customer.
-- Call-only was the least effective method (low total revenue, low per-customer revenue).
-- Revenue is increasing over time, but growth is fastest with Email + Call.
+## Recommendations
 
-### **Business Recommendation**
-1. Prioritize "Email + Call" for high-value customers (as it generates the highest revenue per customer).  
-2. Use "Email-only" for mass outreach (to minimize team effort while reaching the most customers).  
-3. Reduce reliance on "Call-only" (since it requires high effort but produces low revenue).  
+1. ✅ Prioritize **"Email + Call"** for high-value customers.
+2. ✅ Use **"Email-only"** for broader, efficient outreach.
+3. ❌ Minimize **"Call-only"** (low revenue and resource-intensive).
 
-Outcome: This strategy will maximize revenue while optimizing team resources.
+These steps will optimize resources and maximize revenue potential.
 
 ---
 
-### **Next Steps**
-- Build a real-time dashboard to track average revenue per customer.  
-- Re-evaluate sales strategy every 6 weeks.  
-- Experiment with personalized email strategies to improve engagement.
+## Next Steps
+
+- 📊 Develop a real-time dashboard to track sales performance.
+- 🔍 Review sales strategies periodically (every 6 weeks).
+- ✉️ Test personalized email campaigns to boost customer engagement.
 
 ---
+
+## Contributing
+
+Contributions are welcome:
+
+1. Fork this repository.
+2. Create your feature branch (`git checkout -b feature/YourFeature`).
+3. Commit changes (`git commit -m 'Add YourFeature'`).
+4. Push to branch (`git push origin feature/YourFeature`).
+5. Open a pull request.
+
+---
+
+## License
+
+This project is licensed under the [MIT License](LICENSE).
+
